@@ -1,6 +1,7 @@
 const buttons=document.getElementById("buttons")
 const btx=document.getElementById("bt0")
 const bto=document.getElementById("bt1")
+const url="index.php"
 let figura='o'
 function put(el){
     console.log(figura);
@@ -20,28 +21,32 @@ function show(){
 btx.addEventListener('click', ()=>{
     figura="x"
     show()
+    send(15)
     //send('x')
 })
 bto.addEventListener('click', ()=>{
     figura="o"
     show()
+    send(15)
     //send('o')
 })
 function send(id){
-    const url="ajax.php"
     const obj={
         id:id,
         figure:figura
     }
     console.log(obj);
+    fetch(url, {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(obj)
+    })
+    .then(response =>response.json)
+    .then(data =>{
+        console.log(data);
+    })
 }
 //wysyła gracza
-function sendObject(){
-    const url="ajax.php"
-    const obj={
-
-    }
-}
         // function send(){
         //     let player='O'
         //     let move;
