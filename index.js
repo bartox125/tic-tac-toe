@@ -41,7 +41,7 @@ function send(id){
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(obj)
     })
-    .then(response =>response.json)
+    .then(response =>response.json())
     .then(data =>{
         console.log(data);
     })
