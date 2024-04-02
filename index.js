@@ -2,40 +2,38 @@ const buttons=document.getElementById("buttons")
 const btx=document.getElementById("bt0")
 const bto=document.getElementById("bt1")
 const url="index.php"
-let figura='o'
-function put(el){
-    console.log(figura);
-    console.log('insert');
-    if(figura=='o'){
-        console.log("tworzenie");
-        const div=document.createElement("div")
-        div.classList.add("circle")
-        el.append(div)
-        console.log("done");
+let figura=''
+function put(id){
+    if(figura!=''){
+        const obj={
+            action: "put",
+            figure: figura,
+            id: id
+        }
+        console.log(obj);
     }
 }
-function show(){
+function show(n){
+    console.log(n);
     buttons.style.display='none'
     document.getElementById("move").style.display="block"
+    document.getElementById("header").innerText=n
 }
 btx.addEventListener('click', ()=>{
     figura="x"
-    show()
-    send(15)
+    send()
     //send('x')
 })
 bto.addEventListener('click', ()=>{
     figura="o"
-    show()
-    send(15)
+    send()
     //send('o')
 })
-function send(id){
+function send(){
     const obj={
-        id:id,
+        action:"savePlayer",
         figure:figura
     }
-    console.log(obj);
     fetch(url, {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
@@ -43,9 +41,78 @@ function send(id){
     })
     .then(response =>response.json())
     .then(data =>{
-        console.log(data);
+        console.log("wysłana figura "+data);
     })
 }
+// document.getElementById("start").addEventListener("click", function(){
+//     let i=0
+//     setInterval(() => {
+//         // const obj={
+//         //     id:i,
+//         //     figure:"test odpowiedzi"
+//         // }
+//         // console.log(obj);
+//         fetch(url, {
+//         //     method: "POST",
+//         //     headers: {'Content-Type': 'application/json'},
+//         //     body: JSON.stringify(obj)
+//         })
+//         .then(response =>response.json())
+//         .then(data =>{
+//             console.log(data+" "+i);
+//         })
+//         i++
+//     }, 500);
+// })
+window.addEventListener('load', function(){
+    let i=0
+    let obj;
+    setInterval(() => {
+        if(i==0){
+            obj={action:"resetGame"}
+        }
+        else if(i==1){
+            obj={action:"getPlayer"}
+        }
+        else{
+            obj={action:"getMove"}
+        }
+        if(i==0){
+            i++
+        }
+        fetch(url,{
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(obj)
+        })
+        .then(response =>response.json())
+        .then(data =>{
+            if(typeof(data)=="string"){
+                if(data==figura){
+
+                }
+                else{
+                    if(data=='x'){
+                        figura='o'
+                    }
+                    else{
+                        figura='x'
+                    }
+                }
+            }
+            console.log("Po otrzymaniu danych "+figura);
+            if(data==figura){
+                show("Wybrałeś: "+figura)
+                i++
+            }
+            else{
+                show("Pozostaje Ci: "+figura)
+                i++
+            }
+        })
+    },1000)
+})
+
 //wysyła gracza
         // function send(){
         //     let player='O'
