@@ -2,146 +2,75 @@ const buttons=document.getElementById("buttons")
 const btx=document.getElementById("bt0")
 const bto=document.getElementById("bt1")
 const url="index.php"
-let figura=''
+let figure=''
 function put(id){
-    if(figura!=''){
-        const obj={
-            action: "put",
-            figure: figura,
-            id: id
-        }
-        console.log(obj);
-    }
+    send("put",figure,id)
 }
 function show(n){
-    console.log(n);
     buttons.style.display='none'
     document.getElementById("move").style.display="block"
     document.getElementById("header").innerText=n
+    document.getElementById("move").innerHTML=(figure=='O' ? "twój ruch" : "ruch przeciwnika")
 }
 btx.addEventListener('click', ()=>{
-    figura="x"
-    send()
-    //send('x')
+    figure="X"
+    send("savePlayer",figure,null)
 })
 bto.addEventListener('click', ()=>{
-    figura="o"
-    send()
-    //send('o')
+    figure="O"
+    send("savePlayer",figure,null)
 })
-function send(){
+function send(order,pl,id){
     const obj={
-        action:"savePlayer",
-        figure:figura
+        action: order,
+        figure: pl,
+        id: id
     }
-    fetch(url, {
+    fetch(url,{
         method: "POST",
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(obj)
-    })
-    .then(response =>response.json())
-    .then(data =>{
-        console.log("wysłana figura "+data);
+        body: JSON.stringify(obj) 
     })
 }
-// document.getElementById("start").addEventListener("click", function(){
-//     let i=0
-//     setInterval(() => {
-//         // const obj={
-//         //     id:i,
-//         //     figure:"test odpowiedzi"
-//         // }
-//         // console.log(obj);
-//         fetch(url, {
-//         //     method: "POST",
-//         //     headers: {'Content-Type': 'application/json'},
-//         //     body: JSON.stringify(obj)
-//         })
-//         .then(response =>response.json())
-//         .then(data =>{
-//             console.log(data+" "+i);
-//         })
-//         i++
-//     }, 500);
-// })
-window.addEventListener('load', function(){
-    let i=0
-    let obj;
-    setInterval(() => {
-        if(i==0){
-            obj={action:"resetGame"}
-        }
-        else if(i==1){
-            obj={action:"getPlayer"}
-        }
-        else{
-            obj={action:"getMove"}
-        }
-        if(i==0){
-            i++
-        }
-        fetch(url,{
-            method: "POST",
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(obj)
-        })
-        .then(response =>response.json())
-        .then(data =>{
-            if(typeof(data)=="string"){
-                if(data==figura){
-
-                }
-                else{
-                    if(data=='x'){
-                        figura='o'
-                    }
-                    else{
-                        figura='x'
-                    }
-                }
-            }
-            console.log("Po otrzymaniu danych "+figura);
-            if(data==figura){
-                show("Wybrałeś: "+figura)
-                i++
+function drawOnBoard(id,el){
+    const element = document.getElementById(id)
+    element.innerText=el
+}
+setInterval(() => {
+    const obj={
+          action: "giveData"  
+    }
+    fetch(url,{
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(obj) 
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.action=="setPlayer"){
+            if(data.player==figure){
+                show("Wybrałeś: "+figure)
             }
             else{
-                show("Pozostaje Ci: "+figura)
-                i++
+                figure=data.player=='X'? 'O' : 'X'
+                show("Pozostaje Ci: "+ figure)
             }
-        })
-    },1000)
-})
-
-//wysyła gracza
-        // function send(){
-        //     let player='O'
-        //     let move;
-        // }
-        // function send() {
-        //     let name = document.getElementById("name").value;
-        //     let al = document.getElementById("al");
-        //     al.className = "show";
-        //     let xhttp = new XMLHttpRequest();
-
-        //     xhttp.onreadystatechange = function () {
-        //         console.log(this.readyState);
-        //         if (this.readyState == 4 && this.status == 200) {
-        //             al.className = "hide";
-        //             let ob = JSON.parse(this.responseText);
-        //             console.log(ob);
-        //         }
-        //     };
-
-        //     xhttp.open("POST", "ajax.php", true);
-        //     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        //     xhttp.send("name=" + encodeURIComponent(name) + "&f=1");
-        // }
-
-        // async function test() {
-        //     let req = await fetch("http://127.0.0.1/");
-        //     let ob = await req.json();
-        //     //...
-        //     console.log(ob);
-        // }
-
+        }
+        if(data.action=="refreshBoard"){
+            drawOnBoard(data.id, data.player)
+            if(data.nextPlayer==figure){
+                document.getElementById("move").innerText="twój ruch"
+            }
+            else{
+                document.getElementById("move").innerText="ruch przeciwnika"
+            }
+        }
+        if(data.action=="endGame"){
+            drawOnBoard(data.id, data.player)
+            document.getElementById("top").style.display="none"
+            document.getElementById("win").style.display="block"
+            document.getElementById("win").innerText="Wygrały "+data.nextPlayer
+        }
+    })
+}, 500);
+window.addEventListener("DOMContentLoaded",send("clearMem","nic"))

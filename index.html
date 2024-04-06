@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl-PL">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>TIC TAC TOE</title>
     <link rel="stylesheet" href="style.css">   
 </head>
 <body>
     <div id="main">
-        <h1 id="header">Wybierz gracza</h1> 
-        <h2 id="move"></h2>
-        <div id="buttons">
-            <button id="bt0">X</button>
-            <button id="bt1">O</button>
+        <div id="top">
+            <h1 id="header">Wybierz gracza</h1> 
+            <h2 id="move"></h2>
+            <div id="buttons">
+                <button id="bt0">X</button>
+                <button id="bt1">O</button>
+            </div>
         </div>
+        <h1 id="win"></h1>
         <div id="board">
             <div class="elOfBoard cTop cLeft" id="0_0" onclick="put(this.id)"></div>
             <div class="elOfBoard cTop" id="1_0" onclick="put(this.id)"></div>
