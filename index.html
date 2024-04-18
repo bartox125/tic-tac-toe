@@ -1,34 +1,42 @@
 <!DOCTYPE html>
-<html lang="pl-PL">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIC TAC TOE</title>
-    <link rel="stylesheet" href="style.css">   
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="main">
-        <div id="top">
-            <h1 id="header">Wybierz gracza</h1> 
-            <h2 id="move"></h2>
-            <div id="buttons">
-                <button id="bt0">X</button>
-                <button id="bt1">O</button>
+    <div class="main">
+        <div>
+            <div id="top">
+                <h1 id="header">Wybierz gracza</h1>
+                <h2 id="move"></h2>
+                <div id="buttons">
+                    <button id="bt0">X</button>
+                    <button id="bt1">O</button>
+                </div>
+                <h1 id="win"></h1> 
             </div>
-        </div>
-        <h1 id="win"></h1>
-        <div id="board">
-            <div class="elOfBoard cTop cLeft" id="0_0" onclick="put(this.id)"></div>
-            <div class="elOfBoard cTop" id="1_0" onclick="put(this.id)"></div>
-            <div class="elOfBoard cTop cRight" id="2_0" onclick="put(this.id)"></div>
-            <div class="elOfBoard cLeft" id="0_1" onclick="put(this.id)"></div>
-            <div class="elOfBoard" id="1_1" onclick="put(this.id)"></div>
-            <div class="elOfBoard cRight" id="2_1" onclick="put(this.id)"></div>
-            <div class="elOfBoard cBottom cLeft" id="0_2" onclick="put(this.id)"></div>
-            <div class="elOfBoard cBottom" id="1_2" onclick="put(this.id)"></div>
-            <div class="elOfBoard cBottom cRight" id="2_2" onclick="put(this.id)"></div>
+                <div class="parent">   
+                    <div id="cover">
+                        <svg id="endLine" width="305px" height="309px"></svg>
+                    </div>
+                    <div class="board">
+                        <div class="elOfBoard cTop cLeft" id="0_0" onclick="put(this.id)"></div>
+                        <div class="elOfBoard cTop" id="1_0" onclick="put(this.id)"></div>
+                        <div class="elOfBoard cTop cRight" id="2_0" onclick="put(this.id)"></div>
+                        <div class="elOfBoard cLeft" id="0_1" onclick="put(this.id)"></div>
+                        <div class="elOfBoard" id="1_1" onclick="put(this.id)"></div>
+                        <div class="elOfBoard cRight" id="2_1" onclick="put(this.id)"></div>
+                        <div class="elOfBoard cBottom cLeft" id="0_2" onclick="put(this.id)"></div>
+                        <div class="elOfBoard cBottom" id="1_2" onclick="put(this.id)"></div>
+                        <div class="elOfBoard cBottom cRight" id="2_2" onclick="put(this.id)"></div>
+                    </div>
+            </div>
         </div>
     </div>
     <script src="index.js"></script>
 </body>
 </html>
+

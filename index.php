@@ -4,13 +4,14 @@ class Message{
     public $id;
     public $player;
     public $nextPlayer;
+    public $board;
 }
 function move($round,$data,$board,$mem){
     $field=$data->id;
     $x=substr($field,0,1);
     $y=substr($field,2,1);
     if($mem->get("board")==false){
-        array_splice($board[$y],$x,1,[$data->figure]);
+        array_splice($board[$y],$x,1,[$_SESSION["player"]]);
         $mem->add("board",$board);
     }
     else{
@@ -18,7 +19,7 @@ function move($round,$data,$board,$mem){
         if($board[$y][$x]!=0){
             return false;
         }
-        array_splice($board[$y],$x,1,[$data->figure]);
+        array_splice($board[$y],$x,1,[$_SESSION["player"]]);
         $mem->delete("board");
         $mem->add("board",$board);
         }
@@ -34,13 +35,16 @@ function move($round,$data,$board,$mem){
     $mem->delete("player",0);
     $mem->delete('nextPlayer',0);
     $mem->add("round",$round=$round+1);
-    $mem->add("player",$data->figure);
-    if(checkCrossRight($board,$data->figure) == true or checkCrossLeft($board,$data->figure)==true or checkRows($board,$data->figure)==true or checkColumns($board,$data->figure)==true){
+    $mem->add("player",$_SESSION["player"]);
+    $pl=$_SESSION["player"];
+    if(checkCrossRight($board,$pl) == true or checkCrossLeft($board,$pl)==true or checkRows($board,$pl)==true or checkColumns($board,$pl)==true){
         $mem->add("order","endGame");
-        $mem->add("nextPlayer",$data->figure);
+        $mem->add("nextPlayer",$pl);
+    }elseif($mem->get("round")==10){
+        $mem->add("order","draw");
     }else{
         $mem->add("order","refreshBoard");
-        if($data->figure=='O'){
+        if($pl=="O"){
             $mem->add("nextPlayer",'X');
         }
         else{
@@ -114,6 +118,7 @@ if (!class_exists('Memcached')) {
     echo "Rozszerzenie Memcache nie jest dostępne.";
     exit;
 }
+session_start();
 $mem=new Memcached;
 $mem->addServer("localhost",11211);
 $data=file_get_contents('php://input');
@@ -124,21 +129,26 @@ $board=array(
     array(0,0,0),
 );
 if ($data->action == 'savePlayer') {
+    $_SESSION["player"] = $data->figure;
     $mem->add("player",$data->figure);
     $mem->add("order","setPlayer");
     $mem->add("round",1);
 }
+elseif($data->action == 'setOtherPlayer'){
+    $_SESSION["player"] = $data->figure;
+}   
 elseif($data->action == "put") {
     $round=$mem->get("round");
-    if($data->figure=='O' and $round%2!=0){
+    if($_SESSION["player"]=="O" and $round%2!=0){
         move($round,$data,$board,$mem);
     }
-    if($data->figure=="X" and $round%2== 0){
+    if($_SESSION["player"]=="X" and $round%2==0){
         move($round,$data,$board,$mem);
     }
 }
 elseif($data->action == "clearMem") {
     $mem->flush();
+    session_destroy();
 }
 elseif($data->action=="giveData"){
     $message=new Message();
@@ -146,7 +156,7 @@ elseif($data->action=="giveData"){
     $message->id = $mem->get("id");
     $message->player = $mem->get("player");
     $message->nextPlayer = $mem->get("nextPlayer");
+    $message->board = $mem->get("board");
     echo json_encode($message);
 }
 ?> 
-

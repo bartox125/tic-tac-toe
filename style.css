@@ -1,21 +1,80 @@
+*{
+    font-family: ui-sans-serif, 
+    system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+h1,h2{
+    text-align: center;
+}
 body{
     display: flex;
     justify-content: center;
-    align-items: center;
+    background-color: black;
+}
+.main{
+    margin: 10px;
+    border-radius: 30px;
+    background-color: aliceblue;
+    height: 600px;
+    width: 600px;
+    display: flex;
+    justify-content: center;
+    --tw-shadow-color: #374151;
+}
+#top{
+    height: 120px;
+    width: 305px;
+}
+#win{
+    display: none;
+    color: red;
+    text-align: center;
+}
+#buttons{
+    display: flex;
+    justify-content: center;
+    width: 305px;
+    columns: 2;
+}
+button{
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+    font-weight: bolder;
+    font-size: larger;
+    background-color: rosybrown;
+    border: none;
+    border-radius: 10px;
+}
+button:hover{
+    background-color: rgb(184, 117, 117);
+}
+.parent{
+    position: relative;
+    width: fit-content;
+    background-color: antiquewhite;
+}
+#cover{
+    position: absolute;
+    z-index: 1;
+    display: none;
+    margin-top:3vh;
+}
+.board{
+    position: absolute;
+    margin-top:3vh ;
+    z-index: 0;
+    width: 305px;
 }
 .elOfBoard{
     float: left;
     border: 1px solid black;
     width: 100px;
     height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-size: 100px;
 }
 .elOfBoard:nth-child(3n+1){
     clear: both;
-}
+} 
 .cTop{
     border-top: none;
 }
@@ -28,21 +87,70 @@ body{
 .cBottom{
     border-bottom: none;
 }
-#win{
-    display: none;
-    color: red;
-    text-align: center;
+@keyframes drawCircle {
+    from {
+      stroke-dashoffset: 314;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  
+circle {
+    stroke: #3498db;
+    stroke-width: 10;
+    fill: none;
+    stroke-dasharray: 314;
+    animation: drawCircle 0.75s linear forwards;
 }
-#buttons{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  
+@keyframes drawLine {
+    from {
+      stroke-dashoffset: 127;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  
+.cross{
+    stroke: #93db34;
+    stroke-width: 13;
+    fill: none;
+    stroke-dasharray: 127;
+    stroke-dashoffset: 127;
+    animation: drawLine 0.75s linear forwards;
 }
-button{
-    width: 3vw;
-    height: 3vh;
-    margin: 1em;
+
+@keyframes drawEnd {
+    from {
+      stroke-dashoffset: 309;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+.end{
+    stroke: red;
+    stroke-width: 20;
+    fill: none;
+    stroke-dasharray: 309;
+    stroke-dashoffset: 309;
+    animation: drawEnd 0.75s linear forwards;
 }
-#board{
-    margin-top:3vh ;
+@keyframes drawEndSides {
+    from {
+      stroke-dashoffset: 434;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+.endSides{
+    stroke: red;
+    stroke-width: 20;
+    fill: none;
+    stroke-dasharray: 434;
+    stroke-dashoffset: 434;
+    animation: drawEndSides 0.75s linear forwards;
 }
