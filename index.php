@@ -5,6 +5,7 @@ class Message{
     public $player;
     public $nextPlayer;
     public $board;
+    public $message;
 }
 function move($round,$data,$board,$mem){
     $field=$data->id;
@@ -37,7 +38,7 @@ function move($round,$data,$board,$mem){
     $mem->add("round",$round=$round+1);
     $mem->add("player",$_SESSION["player"]);
     $pl=$_SESSION["player"];
-    if(checkCrossRight($board,$pl) == true or checkCrossLeft($board,$pl)==true or checkRows($board,$pl)==true or checkColumns($board,$pl)==true){
+    if(checkCrossRight($board,$pl)==true or checkCrossLeft($board,$pl)==true or checkRows($board,$pl)==true or checkColumns($board,$pl)==true){
         $mem->add("order","endGame");
         $mem->add("nextPlayer",$pl);
     }elseif($mem->get("round")==10){
@@ -64,7 +65,6 @@ function checkRows($board,$el){
             return true;
         }
     }
-    return false;
 }
 function checkColumns($board,$el){
     for ($x = 0; $x < 3; $x++) {
@@ -78,7 +78,6 @@ function checkColumns($board,$el){
             return true;
         }
     }
-    return false;
 }
 function checkCrossLeft($board,$el){
     $ile=0;
@@ -89,9 +88,6 @@ function checkCrossLeft($board,$el){
     }
     if ($ile== 3) {
         return true;
-    }
-    else{
-        return false;
     }
 }
 function checkCrossRight($board,$el){
@@ -109,9 +105,6 @@ function checkCrossRight($board,$el){
     }
     if ($ile== 3) {
         return true;
-    }
-    else{
-        return false;
     }
 }
 if (!class_exists('Memcached')) {
@@ -151,12 +144,24 @@ elseif($data->action == "clearMem") {
     session_destroy();
 }
 elseif($data->action=="giveData"){
-    $message=new Message();
-    $message->action = $mem->get("order");
-    $message->id = $mem->get("id");
-    $message->player = $mem->get("player");
-    $message->nextPlayer = $mem->get("nextPlayer");
-    $message->board = $mem->get("board");
+    if(isset($_SESSION["player"])){
+        $message=new Message();
+        $message->action = $mem->get("order");
+        $message->id = $mem->get("id");
+        $message->player = $mem->get("player");
+        $message->nextPlayer = $mem->get("nextPlayer");
+        $message->board = $mem->get("board");
+        $message->message = $_SESSION["player"]==$mem->get("nextPlayer") ? "twój ruch" : "ruch przeciwnika";
+    }
+    else{
+        $message=new Message();
+        $message->action = $mem->get("order");
+        $message->id = $mem->get("id");
+        $message->player = $mem->get("player");
+        $message->nextPlayer = $mem->get("nextPlayer");
+        $message->board = $mem->get("board");
+        $message->message = null;
+    }
     echo json_encode($message);
 }
 ?> 

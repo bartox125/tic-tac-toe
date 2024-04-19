@@ -1,7 +1,6 @@
 const buttons=document.getElementById("buttons")
 const btx=document.getElementById("bt0")
 const bto=document.getElementById("bt1")
-const cover=document.getElementById("endLine")
 const url="index.php"
 const circle=`<svg width="100" height="100">
 <circle cx="50" cy="50" r="40" stroke="red" stroke-width="10" fill="white"/>
@@ -154,12 +153,7 @@ setInterval(() => {
             if(idArray.includes(data.id)==false){
                 idArray.push(data.id)
                 drawOnBoard(data.id, data.player)
-                if(data.nextPlayer==figure){
-                    document.getElementById("move").innerText="twój ruch"
-                }
-                else{
-                    document.getElementById("move").innerText="ruch przeciwnika"
-                }
+                document.getElementById("move").innerText=data.message
             }
         }
         if(data.action=="endGame"){
@@ -168,7 +162,9 @@ setInterval(() => {
                 drawOnBoard(data.id, data.player)
                 setTimeout(() => {
                     comunicat("Wygrały "+data.nextPlayer)
+                    document.getElementById("cover").style.display="block"
                     findElements(data.nextPlayer, data.board)
+                    send("clearMem")
                 }, 750);
             }
         }
@@ -178,6 +174,7 @@ setInterval(() => {
                 drawOnBoard(data.id, data.player)
                 setTimeout(() => {
                     comunicat("Remis")
+                    send("clearMem")
                 }, 750);
             }
         }
